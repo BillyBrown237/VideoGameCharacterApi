@@ -1,18 +1,15 @@
+using Microsoft.EntityFrameworkCore;
 using System;
+using VideoGameCharacterApi.Data;
+using VideoGameCharacterApi.Dtos;
 using VideoGameCharacterApi.Models;
 
 namespace VideoGameCharacterApi.Services;
 
-public class VideoGameCharacterService : IVideoGameCharacterService
+public class VideoGameCharacterService(AppDbContext context) : IVideoGameCharacterService
 {
-      static readonly List<Character> characters =
-    [
-        new() { Id = 1, Name = "Mario", Game = "Super Mario Bros", Role = "Hero" },
-        new() { Id = 2, Name = "Link", Game = "The Legend of Zelda", Role = "Protagonist" },
-        new() { Id = 3, Name = "Bowser", Game = "Super Mario Bros", Role = "Villain" },
-        new() { Id = 4, Name = "Zelda", Game = "The legends of Zelda", Role = "Princess" }
-    ];
-    public Task<Character> AddCharacterAsync(Character character)
+  
+    public Task<GetCharacterResponseDto> AddCharacterAsync(Character character)
     {
         throw new NotImplementedException();
     }
@@ -22,15 +19,16 @@ public class VideoGameCharacterService : IVideoGameCharacterService
         throw new NotImplementedException();
     }
 
-    public async Task<List<Character>> GetAllCharactersAsync()
+    public async Task<List<GetCharacterResponseDto>> GetAllCharactersAsync()
     {
-         return await Task.FromResult(characters);
+        return await context.Characters.Select(c => new GetCharacterResponseDto { Name = c.Name, Game = c.Game, Role = c.Role}).ToListAsync();
     }
 
-    public async Task<Character?> GetCharacterByIdAsync(int id)
-    {
-        var result = characters.FirstOrDefault(c => c.Id == id);
-        return await Task.FromResult(result);
+    public async Task<GetCharacterResponseDto?> GetCharacterByIdAsync(int id)
+    { 
+        var result = await context.Characters.Where(c => c.Id == id).Select(c => new GetCharacterResponseDto { Name = c.Name, Game = c.Game, Role = c.Role }).FirstOrDefaultAsync();
+       
+        return result;
     }
 
     public Task<bool> UpdateCharacterAsync(int id, Character character)
