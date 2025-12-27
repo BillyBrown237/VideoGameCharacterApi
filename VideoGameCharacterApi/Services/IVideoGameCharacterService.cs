@@ -8,8 +8,8 @@ public interface IVideoGameCharacterService
 {
 Task<List<GetCharacterResponseDto>> GetAllCharactersAsync();
 Task<GetCharacterResponseDto?> GetCharacterByIdAsync(int id);
-Task<GetCharacterResponseDto> AddCharacterAsync(Character character);
-Task<bool> UpdateCharacterAsync(int id, Character character);
+Task<GetCharacterResponseDto> AddCharacterAsync(CreateCharacterDto character);
+Task<bool> UpdateCharacterAsync(int id, UpdateCharacterDto character);
 Task<bool> DeleteCharacterAsync(int id);
 
 }

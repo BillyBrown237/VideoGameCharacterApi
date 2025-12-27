@@ -27,5 +27,32 @@ public class VideoGameCharactersController(IVideoGameCharacterService service) :
         }
         return Ok(character);
     }
+    [HttpPost]
+   public async Task<ActionResult<GetCharacterResponseDto>> AddCharacter([FromBody] CreateCharacterDto character)
+    {
+        var createdCharacter = await service.AddCharacterAsync(character);
+        return CreatedAtAction(nameof(GetCharacter), new { id = createdCharacter.Id }, createdCharacter);
+    }
 
+    [HttpPut("{id}")]
+    public async Task<ActionResult> UpdateCharacter(int id, [FromBody] UpdateCharacterDto character)
+    {
+        var isUpdated = await service.UpdateCharacterAsync(id, character);
+        if (!isUpdated)
+        {
+            return NotFound("Character with the given Id was not found");
+        }
+        return NoContent();
+    }
+
+    [HttpDelete("{id}")]
+    public async Task<ActionResult> DeleteCharacter(int id)
+    {
+        var isDeleted = await service.DeleteCharacterAsync(id);
+        if (!isDeleted)
+        {
+            return NotFound("Character with the given Id was not found");
+        }
+        return NoContent();
+    }
 }
